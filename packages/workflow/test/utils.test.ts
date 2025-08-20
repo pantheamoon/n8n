@@ -268,6 +268,11 @@ describe('randomInt', () => {
 			expect(result).toBeGreaterThanOrEqual(10);
 		});
 	});
+
+	it('should return the lower bound when the range is empty or inverted', () => {
+		expect(randomInt(5, 5)).toBe(5);
+		expect(randomInt(10, 5)).toBe(10);
+	});
 });
 
 describe('randomString', () => {
@@ -366,6 +371,12 @@ describe('hasKey', () => {
 			const z: Expect<Equal<typeof x, unknown>> = true;
 			z;
 		}
+	});
+
+	it('should work when hasOwnProperty is overridden', () => {
+		const obj = { a: 1, hasOwnProperty: () => false };
+		const result = hasKey(obj, 'a');
+		expect(result).toEqual(true);
 	});
 });
 
