@@ -258,6 +258,10 @@ export function randomInt(min: number, max?: number): number {
 		max = min;
 		min = 0;
 	}
+	// Avoid NaN from modulo by zero and guard against invalid ranges
+	if (max <= min) {
+		return min;
+	}
 	return min + (crypto.getRandomValues(new Uint32Array(1))[0] % (max - min));
 }
 
@@ -281,7 +285,9 @@ export function randomString(minLength: number, maxLength?: number): string {
  * Checks if a value is an object with a specific key and provides a type guard for the key.
  */
 export function hasKey<T extends PropertyKey>(value: unknown, key: T): value is Record<T, unknown> {
-	return value !== null && typeof value === 'object' && value.hasOwnProperty(key);
+	return (
+		value !== null && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, key)
+	);
 }
 
 const unsafeObjectProperties = new Set(['__proto__', 'prototype', 'constructor', 'getPrototypeOf']);
